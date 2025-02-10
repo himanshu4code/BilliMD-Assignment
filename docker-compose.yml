@@ -5,7 +5,7 @@ services:
     build: .
     container_name: blog-app
     ports:
-      - "8002:8000"
+      - "8000:8000"
     environment:
       - BLOG_DB_URL=postgresql://postgres:password@db:5432/blogdb
     depends_on:
