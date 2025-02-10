@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: blog-app
+    ports:
+      - "8002:8000"
+    environment:
+      - BLOG_DB_URL=postgresql://postgres:password@db:5432/blogdb
+    depends_on:
+      - db
+      - cerbos
+    networks:
+      - app-network
+
+  cerbos:
+    image: ghcr.io/cerbos/cerbos:0.40.0
+    container_name: cerbos
+    ports:
+      - "3592:3592"
+      - "3593:3593"
+    volumes:
+      - ./policies:/policies
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=blogdb
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
